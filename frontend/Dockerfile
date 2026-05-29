@@ -9,7 +9,7 @@ ARG VUE_APP_PUBLIC_PATH="/"
 ENV VUE_APP_PUBLIC_PATH=$VUE_APP_PUBLIC_PATH
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 RUN npm run build
