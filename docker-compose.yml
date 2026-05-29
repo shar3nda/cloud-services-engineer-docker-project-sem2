@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    read_only: true
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VUE_APP_API_URL=/api
+        - VUE_APP_PUBLIC_PATH=/
+    read_only: true
+    volumes:
+      - frontend-logs:/app/logs
+    tmpfs:
+      - /var/cache/nginx:size=128m,noexec,nosuid,mode=1777
+      - /var/run:size=128m,noexec,nosuid,mode=1777
+      - /tmp:size=128m,noexec,nosuid,mode=1777
+  gateway:
+    image: nginxinc/nginx-unprivileged:1.31-alpine3.23
+    command:
+      - nginx
+      - -g
+      - "daemon off;"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - gateway-logs:/var/log/nginx
+    ports:
+      - "80:80"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:size=128m,noexec,nosuid,mode=1777
+      - /var/run:size=128m,noexec,nosuid,mode=1777
+      - /tmp:size=128m,noexec,nosuid,mode=1777
+
+volumes:
+  gateway-logs:
+  frontend-logs:

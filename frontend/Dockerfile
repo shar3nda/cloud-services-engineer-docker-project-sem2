@@ -1,22 +1,24 @@
 FROM node:26-alpine3.23 as builder
 WORKDIR /app
 
+ENV NODE_OPTIONS="--openssl-legacy-provider"
+
+ARG VUE_APP_API_URL="/api"
+ENV VUE_APP_API_URL=$VUE_APP_API_URL
+ARG VUE_APP_PUBLIC_PATH="/"
+ENV VUE_APP_PUBLIC_PATH=$VUE_APP_PUBLIC_PATH
+
 COPY package*.json ./
 RUN npm install
 
 COPY . .
 RUN npm run build
 
-FROM nginx:1.31-alpine3.23
+FROM nginxinc/nginx-unprivileged:1.31-alpine3.23
 WORKDIR /app
 
-RUN addgroup -g 1000 app \
-    && adduser -G app -u 1000 app -D
-
-COPY --from=builder --chown=app:app /app/dist /usr/share/nginx/html
-COPY --chown=app:app nginx.conf /etc/nginx/conf.d/default.conf
-
-USER app:app
+COPY --from=builder --chown=nginx:nginx /app/dist /usr/share/nginx/html
+COPY --chown=nginx:nginx nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
