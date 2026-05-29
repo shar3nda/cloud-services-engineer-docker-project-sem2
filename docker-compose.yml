@@ -1,7 +1,5 @@
 services:
   backend:
-    build:
-      context: ./backend
     image: ${DOCKER_USER:-johannkrupp}/docker-project-backend:latest
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8081/health"]
@@ -14,11 +12,6 @@ services:
     cap_drop:
       - ALL
   frontend:
-    build:
-      context: ./frontend
-      args:
-        - VUE_APP_API_URL=/api
-        - VUE_APP_PUBLIC_PATH=/
     image: ${DOCKER_USER:-johannkrupp}/docker-project-frontend:latest
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]

@@ -1,0 +1,11 @@
+services:
+  backend:
+    build:
+      context: ./backend
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VUE_APP_API_URL: /api
+        VUE_APP_PUBLIC_PATH: /

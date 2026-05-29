@@ -28,6 +28,9 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v4
         with:
+          build-args: |
+            VUE_APP_API_URL=/api
+            VUE_APP_PUBLIC_PATH=/
           context: ./${{ matrix.kind }}/
           push: false
           load: true
